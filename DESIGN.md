@@ -1,6 +1,6 @@
 # Design
 
-Source of truth: the "Wealth Desk Document Assistant" artifact. The CSS in `AI.Client.Web/src/index.css` is a verbatim copy; change both together.
+Source of truth: the "Wealth Desk Document Assistant" artifact. The CSS in `AI.Client.Web/AI.Client.Web/src/index.css` is a verbatim copy; change both together.
 
 ## Fonts
 - Display: Newsreader (400, 500) for the greeting, output file name, drop zone

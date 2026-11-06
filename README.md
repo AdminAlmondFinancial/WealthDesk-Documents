@@ -3,13 +3,13 @@
 Document AI microservice for Wealth Desk. This branch holds the frontend only; the C# backend is added later.
 
 ## Layout
-- `AI.Client.Web/` — Vite + React 19 + TypeScript frontend (the Document Assistant UI)
+- `AI.Client.Web/AI.Client.Web/` — Vite + React 19 + TypeScript frontend (the Document Assistant UI); `AI.Client.Web/` also holds `start-dev.bat`
 - `Deployment/pipelines/` — Azure DevOps pipelines
 - `memory/` — project notes for Claude Code
 
 ## Run the frontend
 ```
-cd AI.Client.Web
+cd AI.Client.Web/AI.Client.Web
 npm install
 npm run dev
 ```

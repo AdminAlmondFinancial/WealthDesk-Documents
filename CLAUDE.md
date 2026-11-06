@@ -13,4 +13,4 @@ Vite + React 19 + TypeScript, React Router v7, Tailwind v4 (theme and utilities 
 - Prefer the edit tool over `sed -i`. Do not add files outside the existing structure.
 
 ## Commands
-Run inside `AI.Client.Web/`: `npm run dev`, `npm run build`, `npm run lint`.
+Run inside `AI.Client.Web/AI.Client.Web/`: `npm run dev`, `npm run build`, `npm run lint`.

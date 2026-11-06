@@ -14,7 +14,7 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  webDir: AI.Client.Web
+  webDir: AI.Client.Web/AI.Client.Web
 
 stages:
   - stage: Build
