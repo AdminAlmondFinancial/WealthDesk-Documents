@@ -1,0 +1,43 @@
+# Azure DevOps pipeline: build the AI.Client.Web frontend.
+# Build only for now; add the deploy stage once the hosting target is decided.
+trigger:
+  branches:
+    include:
+      - main
+      - UI/frontend
+  paths:
+    include:
+      - AI.Client.Web/*
+      - Deployment/*
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  webDir: AI.Client.Web
+
+stages:
+  - stage: Build
+    displayName: Build frontend
+    jobs:
+      - job: Web
+        steps:
+          - task: NodeTool@0
+            displayName: Use Node 22
+            inputs:
+              versionSpec: 22.x
+          - script: npm ci
+            displayName: Install dependencies
+            workingDirectory: $(webDir)
+          - script: npm run lint
+            displayName: Lint
+            workingDirectory: $(webDir)
+          - script: npm run build
+            displayName: Build
+            workingDirectory: $(webDir)
+          - publish: $(webDir)/dist
+            artifact: ai-client-web
+            displayName: Publish dist
+  # - stage: Deploy
+  #   dependsOn: Build
+  #   (deploy steps go here)

@@ -1,4 +1,4 @@
-import { LogoMark, PlusIcon } from '@/components/composed/Icons'
+import { PlusIcon } from '@/components/composed/Icons'
 import type { CurrentUser, HistoryGroup } from '@/pages/Assistant/assistantTypes'
 
 interface Props {

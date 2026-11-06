@@ -104,12 +104,12 @@ export default function AssistantPage() {
     }
   }
 
+  const [activeId, setActiveId] = useState<string | null>(null)
   const newChat = useCallback(() => {
     run.current++; clearTimers(); abort.current?.abort(); setWork(null)
     setMessages([]); setActiveId(null); setText(''); attach(null)
     inputRef.current?.focus()
   }, [])
-  const [activeId, setActiveId] = useState<string | null>(null)
 
   const hasFiles = (e: React.DragEvent) => Array.prototype.indexOf.call(e.dataTransfer?.types || [], 'Files') >= 0
   const mainHandlers = {

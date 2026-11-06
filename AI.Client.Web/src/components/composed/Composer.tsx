@@ -18,55 +18,55 @@ interface Props {
   onSend: () => void
 }
 
-export default function Composer(p: Props) {
+export default function Composer({ inputRef, value, style, attachment, attachKey, busy, canSend, onChange, onStyle, onFile, onRemove, onSend }: Props) {
   const onKey = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
-      if (!p.busy) p.onSend()
+      if (!busy) onSend()
     }
   }
-  const onFile = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0]
-    if (f) p.onFile(f)
+    if (f) onFile(f)
     e.target.value = ''
   }
   return (
     <div className="dock after">
       <div className="cwrap">
         <div className="composer">
-          {p.attachment && (
-            <div className="chip" id="chip" key={p.attachKey}>
+          {attachment && (
+            <div className="chip" id="chip" key={attachKey}>
               <Sheet size="sm" n={5} />
-              <div><b id="chipName">{p.attachment.name}</b><small id="chipMeta">{p.attachment.meta}</small></div>
-              <button className="icon-btn" type="button" aria-label="Remove attachment" onClick={p.onRemove} style={{ width: 28, height: 28, borderRadius: 8 }}><CloseIcon /></button>
+              <div><b id="chipName">{attachment.name}</b><small id="chipMeta">{attachment.meta}</small></div>
+              <button className="icon-btn" type="button" aria-label="Remove attachment" onClick={onRemove} style={{ width: 28, height: 28, borderRadius: 8 }}><CloseIcon /></button>
               <span className="bar" aria-hidden="true"></span>
             </div>
           )}
           <label htmlFor="input" className="sr">Message the document assistant</label>
           <textarea
             id="input"
-            ref={p.inputRef}
+            ref={inputRef}
             rows={2}
-            value={p.value}
-            onChange={(e) => p.onChange(e.target.value)}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
             onKeyDown={onKey}
-            placeholder={p.attachment ? 'Add any instructions, or press Enter to format' : 'Describe how the document should look, or attach a file'}
+            placeholder={attachment ? 'Add any instructions, or press Enter to format' : 'Describe how the document should look, or attach a file'}
           />
           <div className="crow">
             <label className="attach" title="Attach a document">
-              <input type="file" id="file" accept=".doc,.docx,.pdf,.txt,.rtf,.odt" aria-label="Attach a document" onChange={onFile} />
+              <input type="file" id="file" accept=".doc,.docx,.pdf,.txt,.rtf,.odt" aria-label="Attach a document" onChange={handleFile} />
               <ClipIcon />
             </label>
             <div className="style-pick">
               <label htmlFor="style" className="sr">House style</label>
-              <select id="style" value={p.style} onChange={(e) => p.onStyle(e.target.value)}>
+              <select id="style" value={style} onChange={(e) => onStyle(e.target.value)}>
                 {HOUSE_STYLES.map((s) => <option key={s}>{s}</option>)}
               </select>
               <SelectChevronIcon />
             </div>
             <div className="spacer"></div>
             <span className="hint">Shift + Enter for a new line</span>
-            <button className="send" type="button" id="send" aria-label={p.busy ? 'Stop formatting' : 'Send'} title={p.busy ? 'Stop formatting' : 'Send'} disabled={!p.canSend} onClick={p.onSend}>
+            <button className="send" type="button" id="send" aria-label={busy ? 'Stop formatting' : 'Send'} title={busy ? 'Stop formatting' : 'Send'} disabled={!canSend} onClick={onSend}>
               <SendIcon />
               <StopIcon />
             </button>
