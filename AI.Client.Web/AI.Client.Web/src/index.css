@@ -67,7 +67,8 @@ button{cursor:pointer}
 .top h1{margin:0;flex:1;min-width:0;font-size:15px;font-weight:600;line-height:22px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .model{height:26px;display:inline-flex;align-items:center;gap:7px;padding:0 10px;border-radius:8px;background:var(--p-soft);color:var(--p-text);font-size:13px;font-weight:600}
 .model i{width:6px;height:6px;border-radius:999px;background:currentColor}
-.busy .model i{animation:pulse 1.4s ease-in-out infinite}
+.model .ms-logo{flex-shrink:0}
+.busy .model .ms-logo{animation:pulse 1.4s ease-in-out infinite}
 .icon-btn{width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:10px;background:transparent;color:var(--muted);transition:background .15s,color .15s}
 .icon-btn:hover{background:var(--p-tint);color:var(--p-text)}
 .icon-btn.sm{width:auto;min-width:32px;height:32px;padding:0 8px;gap:6px;font-size:13px}

@@ -53,7 +53,15 @@ export const StopIcon = () => (
 export const ListIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" {...base} stroke="currentColor" strokeWidth="1.5" style={{ flexShrink: 0 }}><path d="M4 6h16M4 10h10M4 14h16M4 18h10" /></svg>
 )
-export const LogoMark = ({ style }: { style?: CSSProperties }) => (
+export const MicrosoftLogo = () => (
+  <svg className="ms-logo" width="14" height="14" viewBox="0 0 23 23" aria-hidden="true">
+    <rect x="1" y="1" width="10" height="10" fill="#F25022" />
+    <rect x="12" y="1" width="10" height="10" fill="#7FBA00" />
+    <rect x="1" y="12" width="10" height="10" fill="#00A4EF" />
+    <rect x="12" y="12" width="10" height="10" fill="#FFB900" />
+  </svg>
+)
+export const LogoMark =({ style }: { style?: CSSProperties }) => (
   <svg width="32" height="32" viewBox="0 0 30 30" aria-hidden="true" style={style ?? { flexShrink: 0 }}>
     <rect width="30" height="30" rx="9" fill="#6D28D9" />
     <path d="M7.5 10l3.5 11 4-8 4 8 3.5-11" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
