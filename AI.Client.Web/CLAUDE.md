@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Frontend for the Wealth Desk Document Assistant. Pure frontend: no .NET code in this repo yet.
+Frontend for the Wealth Desk Document Assistant. Pure frontend: the .NET backend lives in the sibling folder `AI.Client.API/` and has its own CLAUDE.md. The repo root holds only these two folders.
 
 ## Stack
 Vite + React 19 + TypeScript, React Router v7, Tailwind v4 (theme and utilities only, no preflight), MSW for mock data, react-auth-kit v3.
