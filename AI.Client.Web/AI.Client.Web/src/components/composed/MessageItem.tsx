@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Sheet from './Sheet'
 import { CheckIcon, ChevronIcon, CircleCheckIcon, CopyIcon, DownloadIcon, EyeIcon, LogoMark, RedoIcon, TickIcon } from './Icons'
+import { downloadFile } from '@/lib/api'
 import { WORD_MS, type Message } from '@/pages/Assistant/assistantTypes'
 
 export default function MessageItem({ m, fresh }: { m: Message; fresh: boolean }) {
@@ -71,9 +72,10 @@ export default function MessageItem({ m, fresh }: { m: Message; fresh: boolean }
               <div className="meta"><b>{m.out.name}</b><small>{m.out.meta}</small></div>
               <div className="acts">
                 <button className="btn sec" type="button" onClick={() => setNotice(true)}><EyeIcon />Preview</button>
-                <button className="btn outl" type="button" onClick={() => setNotice(true)}><DownloadIcon />Download</button>
+                <button className="btn outl" type="button" onClick={() => (m.out?.id ? downloadFile(`/documents/${m.out.id}/download`, m.out.name).catch(() => setNotice(true)) : setNotice(true))}><DownloadIcon />Download</button>
               </div>
             </div>
+            {m.warnings?.map((w) => <p className="note" key={w}>Check this: {w}</p>)}
             <p className="note" hidden={!notice}>This is a design preview. Files are produced once the formatting service is connected.</p>
           </>
         )}

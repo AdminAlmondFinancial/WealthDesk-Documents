@@ -4,6 +4,7 @@ export interface Attachment {
 }
 
 export interface OutputFile {
+  id?: string
   name: string
   meta: string
 }
@@ -23,6 +24,7 @@ export interface AssistantMessage {
   took?: number
   changes?: string[]
   out?: OutputFile
+  warnings?: string[]
 }
 
 export type Message = UserMessage | AssistantMessage
@@ -39,6 +41,7 @@ export interface HistoryGroup {
 
 export interface FormatResult {
   changes: string[]
+  warnings?: string[]
   out: OutputFile
 }
 

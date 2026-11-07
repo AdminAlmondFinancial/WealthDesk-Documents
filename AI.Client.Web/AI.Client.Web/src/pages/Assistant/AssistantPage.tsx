@@ -89,7 +89,7 @@ export default function AssistantPage() {
           clearTimers(); setWork(null)
           const reply: AssistantMessage = {
             id: 'a' + id, role: 'assistant', took: Math.round((Date.now() - start) / 100) / 10, steps,
-            text: 'Done. ' + att!.name + ' now follows the ' + t + '. Here is what changed:', changes: res.changes, out: res.out,
+            text: 'Done. ' + att!.name + ' now follows the ' + t + '. Here is what changed:', changes: res.changes, out: res.out, warnings: res.warnings,
           }
           push(reply)
         })
