@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="AI.Client.API/AI.Client.API.csproj" />
+  <Project Path="AI.Client.DatabaseIntegrationTests/AI.Client.DatabaseIntegrationTests.csproj" />
+  <Project Path="AI.Client.DataMigration/AI.Client.DataMigration.csproj" />
+  <Project Path="AI.Client.IntegrationTests/AI.Client.IntegrationTests.csproj" />
+  <Project Path="AI.Client.UnitTests/AI.Client.UnitTests.csproj" />
+</Solution>

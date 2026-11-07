@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="dbup-postgresql" Version="6.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="scripts\Script0001 - Create chats.sql" />
+    <None Remove="scripts\Script0002 - Create formatted documents.sql" />
+    <None Remove="scripts\Script0003 - Create audit log.sql" />
+    <None Remove="scripts\Script0004 - Index chats by user.sql" />
+    <None Remove="scripts\Script0005 - Index documents by user.sql" />
+    <None Remove="scripts\Script0006 - Index audit log by user.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="scripts\Script0001 - Create chats.sql" />
+    <EmbeddedResource Include="scripts\Script0002 - Create formatted documents.sql" />
+    <EmbeddedResource Include="scripts\Script0003 - Create audit log.sql" />
+    <EmbeddedResource Include="scripts\Script0004 - Index chats by user.sql" />
+    <EmbeddedResource Include="scripts\Script0005 - Index documents by user.sql" />
+    <EmbeddedResource Include="scripts\Script0006 - Index audit log by user.sql" />
+  </ItemGroup>
+
+</Project>
