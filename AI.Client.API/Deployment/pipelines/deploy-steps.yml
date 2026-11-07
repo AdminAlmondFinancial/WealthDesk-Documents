@@ -1,0 +1,16 @@
+# Shared steps: run the migrator, then deploy. Used by full.yml.
+parameters:
+  - name: connectionString
+    type: string
+
+steps:
+  - task: DotNetCoreCLI@2
+    displayName: Run database migrations
+    inputs:
+      command: run
+      projects: AI.Client.API/AI.Client.DataMigration/AI.Client.DataMigration.csproj
+      arguments: -c Release
+    env:
+      ConnectionStrings__Default: ${{ parameters.connectionString }}
+
+  # The hosting target is not decided yet (same as the frontend pipeline). Add the deploy task here.

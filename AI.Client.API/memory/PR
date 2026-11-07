@@ -1,0 +1,5 @@
+PR notes: add AI.Client.API backend
+
+Adds the C# backend (AI.Client.API/) for the Wealth Desk Document Assistant, plus frontend sign-in.
+Verify: dotnet build AI.Client.slnx && dotnet test AI.Client.slnx (database tests need Postgres).
+Risks: orchestrator contract is provisional until the /fill handoff; chat returns 501.

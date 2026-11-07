@@ -12,11 +12,11 @@ public sealed class AssistantProfile : Profile
     {
         CreateMap<CurrentUser, MeDto>();
         CreateMap<CurrentUser, LoginResultDto>()
-            .ForMember(d => d.AccessAreas, o => o.MapFrom(s => s.Areas));
+            .ForCtorParam("AccessAreas", o => o.MapFrom(s => s.Areas));
         CreateMap<ChatGroup, HistoryGroupDto>()
-            .ForMember(d => d.Items, o => o.MapFrom(s => s.Items.Select(i => new[] { i.Id.ToString(), i.Title }).ToList()));
+            .ForCtorParam("Items", o => o.MapFrom(s => s.Items.Select(i => new[] { i.Id.ToString(), i.Title }).ToList()));
         CreateMap<IFormattedDocument, OutputFileDto>();
         CreateMap<FormatResult, FormatResultDto>()
-            .ForMember(d => d.Out, o => o.MapFrom(s => s.Document));
+            .ForCtorParam("Out", o => o.MapFrom(s => s.Document));
     }
 }

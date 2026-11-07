@@ -1,0 +1,28 @@
+trigger: none
+pr:
+  branches:
+    include: [main, master]
+  paths:
+    include: [AI.Client.API/*]
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  # Throwaway database for the test run only.
+  ConnectionStrings__Default: Host=localhost;Username=postgres;Password=ci-only-password;Database=postgres
+
+steps:
+  - task: UseDotNet@2
+    inputs:
+      version: 9.0.x
+  - script: |
+      docker run -d --name pg -p 5432:5432 -e POSTGRES_PASSWORD=ci-only-password postgres:16
+      until docker exec pg pg_isready -U postgres; do sleep 1; done
+    displayName: Start Postgres
+  - script: dotnet build AI.Client.API/AI.Client.slnx -c Release
+    displayName: Build
+  - script: dotnet run --project AI.Client.API/AI.Client.DataMigration -c Release --no-build
+    displayName: Run migrations
+  - script: dotnet test AI.Client.API/AI.Client.slnx -c Release --no-build
+    displayName: Test
