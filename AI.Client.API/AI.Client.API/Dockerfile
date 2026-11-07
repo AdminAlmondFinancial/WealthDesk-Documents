@@ -16,8 +16,9 @@ EXPOSE 8080
 # Configuration keys (set as environment variables at deploy time; the double underscore is the ':' separator).
 # Secrets (marked *) come from Key Vault or pipeline secrets and are never baked into the image.
 #   ConnectionStrings__Default        Postgres connection string *
-#   Entra__TenantId                   Microsoft Entra tenant id
-#   Entra__ClientId                   Entra app registration (client) id
+#   Access__TeamDomain                Cloudflare Access team domain
+#   Access__Audience                  AUD tag of the Access application for this backend
+#   Access__ServiceTokenClientId      Client id of the Worker service token
 #   Orchestrator__BaseUrl             wealthdesk-documents Worker URL
 #   Orchestrator__AccessClientId      Cloudflare Access service token id *
 #   Orchestrator__AccessClientSecret  Cloudflare Access service token secret *

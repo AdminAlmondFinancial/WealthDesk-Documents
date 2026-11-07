@@ -18,7 +18,8 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureAppConfiguration((_, config) =>
-            config.AddInMemoryCollection(new Dictionary<string, string?> { ["Orchestrator:BaseUrl"] = "" }));
+            config.AddInMemoryCollection(new Dictionary<string, string?> { ["Orchestrator:BaseUrl"] = "",
+                ["Access:Audience"] = "test-audience" }));
 
         builder.ConfigureServices(services =>
         {

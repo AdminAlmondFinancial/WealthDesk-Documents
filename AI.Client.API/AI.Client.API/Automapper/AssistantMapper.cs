@@ -14,10 +14,6 @@ public sealed partial class AssistantMapper
     [MapperIgnoreSource(nameof(CurrentUser.Areas))]
     public partial MeDto ToMeDto(CurrentUser user);
 
-    [MapperIgnoreSource(nameof(CurrentUser.Id))]
-    [MapProperty(nameof(CurrentUser.Areas), nameof(LoginResultDto.AccessAreas))]
-    public partial LoginResultDto ToLoginResultDto(CurrentUser user);
-
     [MapperIgnoreSource(nameof(IFormattedDocument.UserId))]
     [MapperIgnoreSource(nameof(IFormattedDocument.Content))]
     [MapperIgnoreSource(nameof(IFormattedDocument.CreatedUtc))]

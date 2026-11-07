@@ -15,7 +15,7 @@ public sealed class Startup(IConfiguration configuration)
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddControllers();
-        services.AddEntraAuthentication(configuration);
+        services.AddCloudflareAccessAuthentication(configuration);
 
         services.AddSingleton<AssistantMapper>();
 

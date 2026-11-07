@@ -15,3 +15,9 @@ Open
 - Mapping uses Mapperly (generated at build time, no licence key).
 - Redaction accuracy still being measured: do not rely on it for PII.
 - Dockerfile build and pipelines not run in the build sandbox (no Docker daemon).
+
+Auth (Cloudflare Access, replaces Entra)
+- Backend verifies Cf-Access-Jwt-Assertion (team domain almondfinancial.cloudflareaccess.com + this backend's own AUD).
+- Worker calls the backend with its service token and forwards X-User-Email (optional X-User-Name); trusted only when the verified token's common_name equals Access:ServiceTokenClientId.
+- To confirm: the backend needs its own Access application (own AUD, not the Worker's), the service token must be allowed on it, Worker must send the X-User-* headers, and service-token JWTs must carry common_name as assumed.
+- Access:Audience and Access:ServiceTokenClientId are empty in appsettings; the app refuses to start without Audience.

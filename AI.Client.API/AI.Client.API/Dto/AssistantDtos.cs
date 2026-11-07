@@ -2,8 +2,6 @@ namespace AI.Client.API.Dto;
 
 public sealed record MeDto(string Name, string Role);
 
-public sealed record LoginResultDto(string Name, string Role, IReadOnlyList<string> AccessAreas);
-
 /// <summary>Items are [id, title] pairs, as the frontend expects.</summary>
 public sealed record HistoryGroupDto(string Label, IReadOnlyList<string[]> Items);
 

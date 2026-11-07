@@ -13,15 +13,17 @@ See `CLAUDE.md` for the structure rules. Projects:
 | `AI.Client.IntegrationTests` | `WebApplicationFactory` with `Mock*DataStore` classes |
 | `AI.Client.DatabaseIntegrationTests` | Real Postgres (creates and drops its own database) |
 
-## Endpoints (all require a Microsoft Entra bearer token)
+## Endpoints (all require a valid Cloudflare Access token)
 | Method | Path | Notes |
 |---|---|---|
-| POST | `/api/auth/login` | Validates the Entra token; returns name, role and all access areas |
 | GET | `/api/me` | `{name, role}` |
 | GET | `/api/chats` | History groups (`Today`, `Yesterday`, ...), using the `X-Timezone` header |
 | POST | `/api/documents/format` | multipart `file` (.docx/.pdf, max 2 MB), `style`, `instructions`; returns `{changes, out{id,name,meta}, warnings}` |
 | GET | `/api/documents/{id}/download` | The formatted .docx |
 | POST | `/api/chat` | Returns 501 until the orchestrator has a chat task |
+
+## Authentication
+Cloudflare Access signs people in before they reach the site; the app has no login of its own. The Worker calls this backend with its Access service token and forwards the user's email. The backend verifies the signed `Cf-Access-Jwt-Assertion` token (team domain, this backend's own AUD, signature, expiry). A user token carries the email itself. A service-token call carries none, so `X-User-Email` (and optional `X-User-Name`) are trusted only when the verified token's `common_name` is the configured service token id. The email is the user id for chat history, and every user gets all access areas.
 
 ## Orchestrator
 Calls go to the Worker (`POST /api/ai/run`, task `format`) with both Cloudflare Access service-token headers on every request. Document text is extracted in C# (the orchestrator takes text, not files). Limits: 2 MB, 10-minute timeout, one retry on 502 only, never on 422. `warnings` are shown for a person to check and are never applied automatically. Logs and audit entries hold timings and status codes only, never document text.

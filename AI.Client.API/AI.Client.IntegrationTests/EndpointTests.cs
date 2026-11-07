@@ -39,20 +39,6 @@ public class EndpointTests
         }
     }
 
-    public class PostLogin : IClassFixture<ApiFactory>
-    {
-        private readonly ApiFactory ApiFactory;
-        public PostLogin(ApiFactory factory) => ApiFactory = factory;
-
-        [Fact]
-        public async Task SignedIn_Post_GrantsAllAccessAreas()
-        {
-            var response = await ApiFactory.CreateUserClient().PostAsync("/api/auth/login", null);
-            var login = await response.Content.ReadFromJsonAsync<LoginResultDto>();
-            Assert.Equal(AI.Client.API.AccountUsers.AccessAreas.All, login!.AccessAreas);
-        }
-    }
-
     public class GetChats : IClassFixture<ApiFactory>
     {
         private readonly ApiFactory ApiFactory;

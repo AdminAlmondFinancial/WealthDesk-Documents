@@ -8,12 +8,10 @@ public sealed class UserManagerFactory : IUserManagerFactory
 {
     public CurrentUser Create(ClaimsPrincipal principal)
     {
-        var id = principal.FindFirstValue("oid")
-                 ?? principal.FindFirstValue(ClaimTypes.NameIdentifier)
-                 ?? principal.FindFirstValue("sub")
-                 ?? throw new ForbiddenException();
-        var name = principal.FindFirstValue("name") ?? principal.Identity?.Name ?? string.Empty;
-        var role = principal.FindFirstValue("roles") ?? principal.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+        // The verified Cloudflare Access email is the user id (chat history is keyed by it).
+        var id = principal.FindFirstValue("email") ?? throw new ForbiddenException();
+        var name = principal.FindFirstValue("name") ?? string.Empty;
+        var role = principal.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
 
         // Every user is granted all areas on login.
         return new CurrentUser(id, name, role, AccessAreas.All);
