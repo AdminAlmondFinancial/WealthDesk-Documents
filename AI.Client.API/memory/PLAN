@@ -21,3 +21,97 @@ Auth (Cloudflare Access, replaces Entra)
 - Worker calls the backend with its service token and forwards X-User-Email (optional X-User-Name); trusted only when the verified token's common_name equals Access:ServiceTokenClientId.
 - To confirm: the backend needs its own Access application (own AUD, not the Worker's), the service token must be allowed on it, Worker must send the X-User-* headers, and service-token JWTs must carry common_name as assumed.
 - Access:Audience and Access:ServiceTokenClientId are empty in appsettings; the app refuses to start without Audience.
+
+=====================================================================
+LOCAL SETUP PLAN (for Claude Code on the developer's own machine)
+=====================================================================
+Goal: run the full app locally: React frontend -> C# backend -> Postgres, with formatting calls going to the
+real wealthdesk-documents Worker. Outcome: upload a small .docx in the browser and get a formatted .docx back.
+Proof: the commands marked CHECK below, each with its exit status or output pasted.
+Constraints: follow AI.Client.API/CLAUDE.md (structure: add nothing new), never commit secrets, never
+log or paste document text. Use the edit tool, not sed -i. If the same blocker fails twice, stop and write
+"BLOCKED: <reason>" at the bottom of this file.
+Work on a new local branch (e.g. local-setup). Commit locally after each step. Do not push or merge unless asked.
+
+Step 0. Prerequisites (CHECK each; report what is missing, do not install silently)
+- dotnet --version        -> 9.x SDK
+- node --version          -> 22.x
+- Postgres 16 reachable   -> either a local install or: docker run -d --name aiclient-pg -p 5432:5432 -e POSTGRES_PASSWORD=<choose> postgres:16
+- Have to hand (the user supplies them; never write them into files tracked by git):
+  Cloudflare Access service-token ID and secret (token "wealthdesk-microservice"),
+  Worker base URL (default https://wealthdesk-documents.mannie-warriner.workers.dev).
+
+Step 1. Build and test (CHECK)
+- cd AI.Client.API && dotnet build AI.Client.slnx   -> 0 errors, 0 warnings
+- dotnet test AI.Client.slnx                        -> all pass. The database tests need Postgres: set
+  ConnectionStrings__Default to an admin connection (Host=localhost;Username=postgres;Password=<yours>;Database=postgres).
+  They create and drop their own throwaway database.
+
+Step 2. Create the real database and run migrations (CHECK)
+- Create database aiclient (psql or docker exec ... createdb).
+- dotnet run --project AI.Client.DataMigration -- "Host=localhost;Username=postgres;Password=<yours>;Database=aiclient"
+  -> prints "Database is up to date." and exit code 0. Tables: chats, formatted_documents, audit_log.
+
+Step 3. Secrets (user-secrets; never commit)
+  cd AI.Client.API/AI.Client.API
+  dotnet user-secrets init
+  dotnet user-secrets set "ConnectionStrings:Default" "<the aiclient connection string>"
+  dotnet user-secrets set "Orchestrator:AccessClientId" "<id>"
+  dotnet user-secrets set "Orchestrator:AccessClientSecret" "<secret>"
+  dotnet user-secrets set "Access:Audience" "local-dev"
+  (Access:Audience only has to be non-empty locally; the app refuses to start without it.)
+  NOTE: user-secrets only loads when ASPNETCORE_ENVIRONMENT=Development.
+
+Step 4. Add a development-only sign-in switch (the one code change)
+Why: the API only accepts a Cloudflare-signed Cf-Access-Jwt-Assertion token and nothing local produces one,
+so every call would be 401. Keep production exactly as strict.
+Rules for the change:
+- Lives in Authentication/ only (AccessAuthenticationHandler and AccessAuthenticationExtensions). No new files or folders.
+- New optional setting Access:DevUserEmail. It is honoured ONLY when IHostEnvironment.IsDevelopment() is true,
+  checked in code at registration/handling time, not just by config. In any other environment the setting is
+  ignored and a request without a valid token is still rejected.
+- When active and no Cf-Access-Jwt-Assertion header is present: authenticate as that email (name = part before @).
+  A request that DOES carry a token is still fully verified.
+- Log one warning at startup when the switch is active.
+- Tests (names <Condition>_<Method>_<Expected>):
+  * unit: switch ignored when environment is Production, even if DevUserEmail is set
+  * unit/integration: Development + DevUserEmail + no token -> authenticated as that email
+  * integration: Production-like host with no token -> 401
+- Do not put DevUserEmail in appsettings.json; set it with user-secrets:
+  dotnet user-secrets set "Access:DevUserEmail" "<the developer's own email>"
+CHECK: dotnet test AI.Client.slnx all pass, including the three new tests.
+
+Step 5. Run the API (CHECK)
+  Windows PowerShell:  $env:ASPNETCORE_ENVIRONMENT="Development"; $env:ASPNETCORE_URLS="http://localhost:5080"; dotnet run --project AI.Client.API
+  macOS/Linux:         ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS=http://localhost:5080 dotnet run --project AI.Client.API
+- CHECK: curl -s http://localhost:5080/api/me                -> {"name":"...","role":"Paraplanner"}
+- CHECK: curl -s http://localhost:5080/api/chats             -> [] on a fresh database
+- Troubleshooting: refuses to start -> Access:Audience (or Orchestrator secrets if BaseUrl is set) missing;
+  connection errors -> Step 2/3 connection string.
+
+Step 6. Real formatting call (CHECK) - use a SHORT, non-client test document (a few lines of dummy text)
+  A short document takes about 20 s on the CPU-only models. Allow up to 10 minutes.
+  curl -s -X POST http://localhost:5080/api/documents/format -F "file=@test.docx" -F "style=File note" -F "instructions="
+  -> JSON with changes, out{id,name,meta}, warnings.  Then:
+  curl -s -o out.docx http://localhost:5080/api/documents/<out.id>/download   -> opens as a Word file.
+  Expected failures and meaning: 401/403 from the Worker = service token wrong or not allowed; 422 = the
+  orchestrator rejected the input (never retried); 502 = inference failure (retried once); 504 = timed out.
+  Do not paste document text or response bodies containing document text into the chat or logs.
+
+Step 7. Frontend (CHECK)
+  cd AI.Client.Web/AI.Client.Web
+  cp .env.example .env.local        (this file is git-ignored)
+  Edit .env.local: VITE_DESIGN_MODE=false and VITE_API_BASE=http://localhost:5080/api
+  npm install && npm run dev        -> http://localhost:5173
+  The backend already allows cross-origin calls from http://localhost:5173.
+  CHECK: in the browser, the greeting shows the dev email's name; attach the test document, pick a style,
+  send; a formatted document appears with a working Download button and any warnings listed under "Check this:".
+  Also run: npm run lint && npm run build -> both succeed.
+  Known limits to expect, not bugs: /api/chat returns 501 (orchestrator has no chat task yet); long documents
+  can exceed the Cloudflare/Azure request time limits later - a submit-then-poll change is planned, not built.
+
+Step 8. Finish
+- Update this file: tick what passed, note anything BLOCKED, and the exact commands that worked on this OS.
+- End with a 5-line summary: done / not done / how to verify / risks / next goal.
+- Risks to mention: the dev sign-in switch must never be enabled outside Development; keep service-token
+  values out of git; Docker image and pipelines still untested.
