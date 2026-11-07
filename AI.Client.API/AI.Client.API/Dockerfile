@@ -21,6 +21,5 @@ EXPOSE 8080
 #   Orchestrator__BaseUrl             wealthdesk-documents Worker URL
 #   Orchestrator__AccessClientId      Cloudflare Access service token id *
 #   Orchestrator__AccessClientSecret  Cloudflare Access service token secret *
-#   AutoMapper__LicenseKey            AutoMapper licence key *
 #   Cors__AllowedOrigins__0           Frontend origin
 ENTRYPOINT ["dotnet", "AI.Client.API.dll"]

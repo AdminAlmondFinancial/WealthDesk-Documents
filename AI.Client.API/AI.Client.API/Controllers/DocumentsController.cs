@@ -1,7 +1,7 @@
 using AI.Client.API.Assistant.Manager;
+using AI.Client.API.Automapper;
 using AI.Client.API.Dto;
 using AI.Client.API.UserManagerFactory;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +10,7 @@ namespace AI.Client.API.Controllers;
 [ApiController]
 [Authorize]
 [Route("api/documents")]
-public sealed class DocumentsController(IUserManagerFactory users, IAssistantManager manager, IMapper mapper) : ControllerBase
+public sealed class DocumentsController(IUserManagerFactory users, IAssistantManager manager, AssistantMapper mapper) : ControllerBase
 {
     private const string DocxContentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 
@@ -27,7 +27,7 @@ public sealed class DocumentsController(IUserManagerFactory users, IAssistantMan
         await file.CopyToAsync(buffer, ct);
 
         var result = await manager.FormatDocumentAsync(user, file.FileName, buffer.ToArray(), style, instructions, ct);
-        return Ok(mapper.Map<FormatResultDto>(result));
+        return Ok(mapper.ToFormatResultDto(result));
     }
 
     [HttpGet("{id:guid}/download")]

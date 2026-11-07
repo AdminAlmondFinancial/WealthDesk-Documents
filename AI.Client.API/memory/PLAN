@@ -7,10 +7,11 @@ Done
 - Dockerfile (no hard-coded Marketing.Client), pipelines run the migrator and set a connection string, README.
 
 Open
-- Orchestrator key: confirm whether the backend or the Worker holds it.
+- Orchestrator key: the Worker holds it as a Worker secret. The backend sends only the two Access headers. Nothing to do until the key is added on the server.
 - Rebuild handoff: /fill endpoint (template + flagged fields). Only OrchestratorDataStore, OrchestratorModels and the Dto mapping should change.
 - Style and instructions are validated but not sent: the format task takes text only.
 - Chat has no orchestrator task: /api/chat returns 501.
-- Chat history is written when a document is formatted; nothing else writes it.
+- Chat history is written when a document is formatted, titled by style only (no file names). The output document name is stored with the file, so treat it as client data.
+- Mapping uses Mapperly (generated at build time, no licence key).
 - Redaction accuracy still being measured: do not rely on it for PII.
 - Dockerfile build and pipelines not run in the build sandbox (no Docker daemon).

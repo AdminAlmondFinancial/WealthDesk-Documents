@@ -27,7 +27,7 @@ See `CLAUDE.md` for the structure rules. Projects:
 Calls go to the Worker (`POST /api/ai/run`, task `format`) with both Cloudflare Access service-token headers on every request. Document text is extracted in C# (the orchestrator takes text, not files). Limits: 2 MB, 10-minute timeout, one retry on 502 only, never on 422. `warnings` are shown for a person to check and are never applied automatically. Logs and audit entries hold timings and status codes only, never document text.
 
 ## Configuration
-Keys are listed at the bottom of `AI.Client.API/Dockerfile`. Secrets (database, Access token, AutoMapper licence key) come from user-secrets locally and Key Vault in Azure, never from source control:
+Keys are listed at the bottom of `AI.Client.API/Dockerfile`. Secrets (database, Access token) come from user-secrets locally and Key Vault in Azure, never from source control:
 
 ```bash
 cd AI.Client.API

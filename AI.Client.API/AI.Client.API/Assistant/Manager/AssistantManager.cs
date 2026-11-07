@@ -47,7 +47,7 @@ public sealed class AssistantManager(
         var document = new FormattedDocument(
             user.Id, outName, $"Word document, formatted to the {style}", converter.BuildDocx(outcome.FormattedText), now);
         await documents.AddAsync(document, ct);
-        await chats.AddAsync(new ChatSession(user.Id, $"Formatted {Path.GetFileNameWithoutExtension(fileName)}", now), ct);
+        await chats.AddAsync(new ChatSession(user.Id, $"Formatted to the {style}", now), ct);
 
         return new FormatResult(document, ["Reformatted the document text"], outcome.Warnings);
     }

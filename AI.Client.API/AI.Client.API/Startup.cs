@@ -17,11 +17,7 @@ public sealed class Startup(IConfiguration configuration)
         services.AddControllers();
         services.AddEntraAuthentication(configuration);
 
-        services.AddAutoMapper(cfg =>
-        {
-            cfg.LicenseKey = configuration["AutoMapper:LicenseKey"];
-            cfg.AddProfile<AssistantProfile>();
-        });
+        services.AddSingleton<AssistantMapper>();
 
         services.AddCors(o => o.AddDefaultPolicy(p => p
             .WithOrigins(configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [])
